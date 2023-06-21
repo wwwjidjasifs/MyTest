@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Dao.IDepartmentinfoDao">
+    <!--查询所有部门-->
+    <select id="selectDepartmentAll" resultType="com.Pojo.Departmentinfo">
+        select * from department
+    </select>
+    <!--查询所有部门并且分页包含搜索-->
+    <select id="queryAllDep" resultType="com.Pojo.Departmentinfo" parameterType="map">
+        select * from department where departmentname LIKE trim(replace(CONCAT('%',#{name},'%'),' ',''))
+        <if test="page !=null and limit !=null">
+            limit #{page} , #{limit}
+        </if>
+    </select>
+    <select id="queryAllRows" resultType="int">
+        select count(departmentid) from department
+    </select>
+    <insert id="insertDept" parameterType="com.Pojo.Departmentinfo" useGeneratedKeys="true" keyProperty="departmentid">
+        insert into department (departmentid,departmentname,departmentphone,departmentnumber) values (null,#{departmentname},#{departmentphone},#{departmentnumber})
+    </insert>
+    <update id="updateDept"  parameterType="com.Pojo.Departmentinfo">
+        update department set departmentname=#{departmentname},departmentphone=#{departmentphone},departmentnumber=#{departmentnumber} where departmentid=#{departmentid}
+    </update>
+    <delete id="deleteDept" parameterType="int">
+        delete from department where departmentid = #{departmentid}
+    </delete>
+</mapper>

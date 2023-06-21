@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Dao.IRoomDao">
+    <select id="queryAllRoom" resultType="com.Pojo.Roominfo" parameterType="map">
+        select * from room where roomname LIKE trim(replace(CONCAT('%',#{roomname},'%'),' ',''))
+        <if test="page !=null and limit !=null">
+            limit #{page} , #{limit}
+        </if>
+    </select>
+    <select id="queryAllRows" resultType="int">
+        select count(roomid) from room
+    </select>
+    <insert id="insertRoom" parameterType="com.Pojo.Roominfo">
+        insert into room (roomid,roomname,peoplenum,roomaddress) values (null,#{roomname},#{peoplenum},#{roomaddress})
+    </insert>
+    <update id="updateRoom" parameterType="com.Pojo.Roominfo">
+        update room set roomname=#{roomname},peoplenum=#{peoplenum},roomaddress=#{roomaddress} where roomid = #{roomid}
+    </update>
+    <update id="updateRoomState">
+        update room set state=#{state} where roomid=#{roomid}
+    </update>
+    <delete id="deleteRoom" parameterType="int">
+        delete from room where roomid = #{roomid}
+    </delete>
+<!--    查询没有被申请和状态开启的会议室-->
+    <select id="selectRoomByState" resultType="com.Pojo.Roominfo">
+        select * from room where isapply = 0 and state =1
+    </select>
+</mapper>

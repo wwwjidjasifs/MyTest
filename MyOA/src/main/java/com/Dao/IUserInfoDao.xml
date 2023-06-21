@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Dao.IUserInfoDao">
+    <select id="userLogin" parameterType="com.Pojo.UserInfo" resultType="com.Pojo.UserInfo">
+        select *
+        from userInfo
+        where username = #{username}
+          and userpass = #{userpass}
+    </select>
+    <select id="selectRole" parameterType="int" resultType="int">
+        SELECT s2.roleid
+        FROM userRole s1,
+             Roleinfo s2,
+             userinfo s3
+        WHERE s3.`userid` = #{userid}
+          AND s3.`userid` = s1.`userid`
+          AND s1.`roleid` = s2.`roleid`;
+    </select>
+    <select id="selectMenuByRole" parameterType="integer" resultType="com.Pojo.Menuinfo">
+        SELECT *
+        FROM menuinfo m1
+        WHERE m1.`menuid` IN (
+            SELECT r1.`menuid`
+            FROM rolemenu r1,
+                 Roleinfo r2
+            WHERE r2.`roleid` = #{roleid}
+              AND r1.`roleid` = r2.`roleid`) and state=1
+    </select>
+    <select id="queryAllUser" resultType="com.Pojo.UserInfo" parameterType="map">
+        select * from userinfo where username LIKE trim(replace(CONCAT('%',#{name},'%'),' ',''))order by userid desc
+        <if test="page !=null and limit !=null">
+            limit #{page} , #{limit}
+        </if>
+    </select>
+    <select id="selectDepNameByDepId" parameterType="int" resultType="java.lang.String">
+        select departmentname
+        from department
+        where departmentid = #{departmentid}
+    </select>
+    <select id="selectRoleNameByRoleId" parameterType="int" resultType="java.lang.String">
+        select rolename
+        from roleinfo
+        where roleid = #{roleid}
+    </select>
+    <select id="queryAllRows" resultType="int">
+        select count(userid)
+        from userinfo
+    </select>
+    <insert id="insertUser" parameterType="com.Pojo.UserInfo">
+        insert into userInfo (userid, username, userpass, sex, birthday, departmentid, telephone, address, email,
+                              entertime, salary)
+        values (null, #{username}, #{userpass}, #{sex}, #{birthday}, #{departmentid}, #{telephone}, #{address},
+                #{email}, #{entertime}, #{salary})
+    </insert>
+    <select id="selectRoleAll" resultType="com.Pojo.Roleinfo">
+        select *
+        from roleinfo
+    </select>
+    <update id="userUpdate" parameterType="com.Pojo.UserInfo">
+        update userinfo
+        set username=#{username},
+            sex=#{sex},
+            birthday=#{birthday},
+            departmentid=#{departmentid},
+            telephone=#{telephone},
+            address=#{address},
+            email=#{email},
+            entertime=#{entertime},
+            salary=#{salary}
+        where userid = #{userid}
+    </update>
+    <update id="updateUserState" parameterType="int">
+        update userinfo
+        set state=#{state}
+        where userid = #{userid}
+    </update>
+    <delete id="deleteUser" parameterType="int">
+        delete
+        from userinfo
+        where userid = #{userid}
+    </delete>
+    <update id="updatePassword">
+        update userinfo set userpass=#{userpass} where userid=#{userid}
+    </update>
+    <update id="insertImage">
+        update userinfo set imageurl=#{imageurl} where userid=#{userid}
+    </update>
+    <select id="getUser" resultType="com.Pojo.UserInfo">
+        select * from userInfo where userid = #{userid}
+    </select>
+    <insert id="batchAddUser" parameterType="map">
+        insert into userInfo (userid, username, userpass, sex, birthday, departmentid, telephone, address, email,
+                              entertime, salary)
+        values
+            <foreach collection="userInfos" item="user" separator=",">
+                (null, #{user.username}, #{user.userpass}, #{user.sex}, #{user.birthday}, #{user.departmentid}, #{user.telephone}, #{user.address},
+                #{user.email}, #{user.entertime}, #{user.salary})
+            </foreach>
+
+    </insert>
+</mapper>

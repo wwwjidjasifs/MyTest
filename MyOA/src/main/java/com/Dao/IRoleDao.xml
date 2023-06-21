@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Dao.IRoleDao">
+    <select id="selectRole" parameterType="map" resultType="com.Pojo.Roleinfo">
+        select * from roleinfo
+        <if test="page !=null and limit !=null">
+            limit #{page} , #{limit}
+        </if>
+    </select>
+    <select id="selectRoleIdByUserId" parameterType="int" resultType="int">
+        SELECT roleid FROM userrole WHERE userid = #{userid}
+    </select>
+    <insert id="insertUserRole" parameterType="int">
+        insert into  userrole (userid,roleid) values  (#{userid},#{roleid})
+    </insert>
+    <update id="updateUserRole" parameterType="int">
+        update userinfo set roleid = #{roleid} where userid = #{userid}
+    </update>
+    <select id="selectRoleRows" resultType="int">
+        select count(roleid) from roleinfo
+    </select>
+    <insert id="insertRole" parameterType="com.Pojo.Roleinfo">
+        insert into  roleinfo (roleid,rolename) values  (#{roleid},#{rolename})
+    </insert>
+    <update id="updateRole">
+        update roleinfo set rolename =#{rolename} where roleid=#{roleid}
+    </update>
+    <delete id="deleteRole" parameterType="Integer">
+        delete from roleinfo where roleid=#{roleid}
+    </delete>
+    <delete id="deleteMenuRole" parameterType="Integer">
+        delete from rolemenu where roleid=#{roleid}
+    </delete>
+</mapper>
