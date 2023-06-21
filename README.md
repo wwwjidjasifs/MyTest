@@ -1,4 +1,6 @@
 # MyTest
+
+默认登录账号admin-123456
 SSM-layui-OA管理系统
 前端使用layui 框架SSM
 （1）登录功能
